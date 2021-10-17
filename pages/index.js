@@ -11,6 +11,14 @@ export default function Home() {
     setList(items);
   };
 
+  const saveToDatabase = async (item) => {
+    const res = await fetch('api/playlists', {
+      method: 'POST',
+      body: JSON.stringify(item),
+    });
+    const data = await res.json();
+  };
+
   if (session) {
     return (
       <>
@@ -22,6 +30,10 @@ export default function Home() {
           <div key={item.id}>
             <h1>{item.name}</h1>
             <img src={item.images[0]?.url} width='100' />
+            <br />
+            <button onClick={() => saveToDatabase(item)}>
+              Save in database
+            </button>
           </div>
         ))}
       </>
