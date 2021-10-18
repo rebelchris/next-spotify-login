@@ -20,8 +20,12 @@ const handler = async (req, res) => {
       uri: uri,
       addedBy: email,
     };
-    const playlist = await prisma.playlist.create({
-      data: playlistItem,
+    const playlist = await prisma.playlist.upsert({
+      where: {
+        uri: uri,
+      },
+      update: {},
+      create: playlistItem,
     });
     return res.status(200).json(playlist);
   } else if (req.method === 'GET') {
