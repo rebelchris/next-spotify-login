@@ -1,5 +1,5 @@
 import { SessionProvider } from 'next-auth/react';
-import '../styles/globals.css';
+import 'tailwindcss/tailwind.css';
 
 export default function App({
   Component,
@@ -7,7 +7,9 @@ export default function App({
 }) {
   return (
     <SessionProvider session={session}>
-      <Component {...pageProps} />
+      <div className='flex items-center justify-center min-h-screen'>
+        <Component {...pageProps} />
+      </div>
     </SessionProvider>
   );
 }
