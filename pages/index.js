@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { PrismaClient } from '@prisma/client';
+import { useSession } from 'next-auth/react';
 
 export async function getStaticProps() {
   const prisma = new PrismaClient();
@@ -11,21 +12,43 @@ export async function getStaticProps() {
   };
 }
 
-const Index = ({ playlists }) => (
-  <ul className='grid grid-cols-2 max-w-xl'>
-    {playlists.map((playlist) => (
-      <li key={playlist.id} className='rounded-xl shadow-lg m-4'>
-        <Link href={`/playlist/${playlist.id}`}>
-          <a>
-            <img
-              src={playlist?.image}
-              className='object-cover w-full rounded-t-xl'
-            />
-            <h3 className='text-2xl m-4'>{playlist.title}</h3>
-          </a>
-        </Link>
-      </li>
-    ))}
-  </ul>
-);
+const Index = ({ playlists }) => {
+  const { data: session } = useSession();
+
+  const upvote = async (playlistId) => {
+    const res = await fetch('api/upvotes', {
+      method: 'POST',
+      body: JSON.stringify({ playlistId: playlistId }),
+    });
+    const data = await res.json();
+  };
+
+  return (
+    <ul className='grid max-w-xl grid-cols-2'>
+      {playlists.map((playlist) => (
+        <li key={playlist.id} className='m-4 shadow-lg rounded-xl'>
+          <Link href={`/playlist/${playlist.id}`}>
+            <a>
+              <img
+                src={playlist?.image}
+                className='object-cover w-full rounded-t-xl'
+              />
+            </a>
+          </Link>
+          <div className='m-4'>
+            <h3 className='text-2xl '>{playlist.title}</h3>
+            {session && (
+              <button
+                className='block mt-4 underline'
+                onClick={() => upvote(playlist.id)}
+              >
+                Upvote playlist)
+              </button>
+            )}
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
+};
 export default Index;

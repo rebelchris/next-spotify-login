@@ -16,4 +16,12 @@ model Playlist {
   image        String?
   uri          String @unique
   addedBy      String
+  upvotes      Upvote[]
+}
+
+model Upvote {
+  id            Int      @id @default(autoincrement())
+  playlist      Playlist @relation(fields: [playlistId], references: [id])
+  playlistId    Int
+  votedBy       String
 }
